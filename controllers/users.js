@@ -1,3 +1,4 @@
+require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const User = require('../models/user');
@@ -23,7 +24,7 @@ const {
 
 module.exports.createUser = (req, res, next) => {
   const {
-    name, about, avatar, email, password,
+    name, email, password,
   } = req.body;
   if (!email || !password) {
     next(new BadRequestError('Отсутствует email или пароль'));
@@ -32,16 +33,11 @@ module.exports.createUser = (req, res, next) => {
     .hash(password, 10)
     .then((hash) => User.create({
       name,
-      about,
-      avatar,
       email,
       password: hash,
     }))
     .then((user) => res.status(SUCCESS).send({
-      _id: user._id,
       name: user.name,
-      about: user.about,
-      avatar,
       email: user.email,
     }))
     .catch((err) => {
@@ -134,21 +130,21 @@ module.exports.loginUser = (req, res, next) => {
   if (!email || !password) {
     next(new BadRequestError('Отсутствует email или пароль'));
   }
-  User.findOne({ email }).select('+password')
+  User.findUserByCredentials({ email }).select('+password')
     .then((user) => {
-      if (!user) {
-        throw new UnauthorizedError('Ошибка авторизации');
-      }
+      // if (!user) {
+      //   throw new UnauthorizedError('Ошибка авторизации');
+      // }
       const token = jwt.sign(
         { _id: user._id },
         NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
         { expiresIn: '7d' },
       );
-      res.cookie('jwt', token, {
-        httpOnly: true,
-        maxAge: 3600000 * 24 * 7,
-      });
-      res.send({ token });
+      // res.cookie('jwt', token, {
+      //   httpOnly: true,
+      //   maxAge: 3600000 * 24 * 7,
+      // });
+      return res.send({ token });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -160,12 +156,12 @@ module.exports.loginUser = (req, res, next) => {
 };
 
 // ЭТО НУЖНО???
-module.exports.unauthorized = (req, res) => {
-  const token = '';
-  res.cookie('jwt', token, {
-    httpOnly: true,
-    sameSite: true,
-    maxAge: 3600000 * 24 * 7,
-  });
-  res.send({ token });
-};
+// module.exports.unauthorized = (req, res) => {
+//   const token = '';
+//   res.cookie('jwt', token, {
+//     httpOnly: true,
+//     sameSite: true,
+//     maxAge: 3600000 * 24 * 7,
+//   });
+//   res.send({ token });
+// };
