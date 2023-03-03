@@ -1,5 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
-require('dotenv').config();
+// require('dotenv').config();
 
 const cors = require('cors');
 const express = require('express');
@@ -7,8 +7,10 @@ const helmet = require('helmet');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
-const MONGO_URL = require('./utils/config');
+// const MONGO_URL = require('./utils/config');
 const { limiter } = require('./middlewares/limiter');
+const routes = require('./routes/index');
+const config = require('./utils/config');
 // const rateLimit = require('express-rate-limit');
 
 // const { loginUser, createUser /* unauthorized */ } = require('./controllers/users');
@@ -24,16 +26,19 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 // const NotFoundError = require('./errors/notFoundErr');
 const errorHandler = require('./errors/errHandler');
 
-const { PORT = 3000, DB_URL = MONGO_URL } = process.env;
+// const { PORT = 3000, DB_URL = MONGO_URL } = process.env;
 const app = express();
 
-mongoose.set('strictQuery', true);
-mongoose.connect(DB_URL, {
-  useNewUrlParser: true,
-});
+mongoose.set('strictQuery', false);
+// mongoose.connect(DB_URL, {
+//   useNewUrlParser: true,
+// });
 // mongoose.connect(NODE_ENV === 'production' ? MONGO_URL : 'mongodb://127.0.0.1:27017/bitfilmsdb');
 
 // console.log(process.env.NODE_ENV);
+mongoose.connect(config.MONGODB_URL, {
+  useNewUrlParser: true,
+});
 
 app.use(requestLogger); // подключаем логгер запросов
 
@@ -82,7 +87,7 @@ app.get('/crash-test', () => {
 //   next(new NotFoundError('Страница не найдена'));
 // });
 
-app.use('/', require('./routes/index'));
+app.use('/', routes);
 
 app.use(errorLogger); // подключаем логгер ошибок
 
@@ -90,6 +95,6 @@ app.use(errors());
 
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}`);
+app.listen(config.PORT, () => {
+  console.log(`App listening on port ${config.PORT}`);
 });
