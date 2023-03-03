@@ -7,6 +7,7 @@ const helmet = require('helmet');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
+const { allowedParams } = require('./middlewares/cors');
 // const MONGO_URL = require('./utils/config');
 const { limiter } = require('./middlewares/limiter');
 const routes = require('./routes/index');
@@ -44,7 +45,7 @@ app.use(requestLogger); // подключаем логгер запросов
 
 app.use(helmet());
 app.use(limiter);
-app.use(cors());
+app.use('*', cors(allowedParams));
 app.use(bodyParser.json());
 
 app.get('/crash-test', () => {
