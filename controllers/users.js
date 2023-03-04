@@ -2,12 +2,13 @@ require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const User = require('../models/user');
+const config = require('../utils/config');
 
-const { NODE_ENV, JWT_SECRET } = process.env;
+// const { NODE_ENV, JWT_SECRET } = process.env;
 
 const BadRequestError = require('../errors/badRequestErr');
 const NotFoundError = require('../errors/notFoundErr');
-const UnauthorizedError = require('../errors/unauthorizedErr');
+// const UnauthorizedError = require('../errors/unauthorizedErr');
 const RequestConflictError = require('../errors/requestConflictErr');
 
 const {
@@ -138,7 +139,7 @@ module.exports.loginUser = (req, res, next) => {
       // }
       const token = jwt.sign(
         { _id: user._id },
-        NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+        config.JWT_SECRET,
         { expiresIn: '7d' },
       );
       // res.cookie('jwt', token, {
