@@ -31,7 +31,7 @@ const movieSchema = new mongoose.Schema({
       message: 'Некорректный URL',
     },
   },
-  trailerLink: {
+  trailer: {
     type: String,
     required: true,
     validate: {
@@ -65,35 +65,6 @@ const movieSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-
-  // name: {
-  //   type: String,
-  //   minlength: 2,
-  //   maxlength: 30,
-  //   required: true,
-  // },
-  // link: {
-  //   type: String,
-  //   required: true,
-  //   validate: {
-  //     validator: (url) => validator.isURL(url),
-  //     message: 'Некорректный URL',
-  //   },
-  // },
-  // owner: {
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: 'user',
-  //   required: true,
-  // },
-  // likes: [{
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: 'user',
-  //   default: [],
-  // }],
-  // createdAt: {
-  //   type: Date,
-  //   default: Date.now,
-  // },
 });
 
 module.exports = mongoose.model('movie', movieSchema);

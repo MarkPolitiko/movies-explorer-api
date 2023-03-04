@@ -2,7 +2,7 @@ const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 const auth = require('../middlewares/auth');
 
-const { loginUser, createUser /* unauthorized */ } = require('../controllers/users');
+const { loginUser, createUser } = require('../controllers/users');
 const NotFoundError = require('../errors/notFoundErr');
 
 router.post(

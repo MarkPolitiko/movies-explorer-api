@@ -32,18 +32,4 @@ router.patch(
   updateUser,
 );
 
-// router.patch(
-//   '/me/avatar',
-//   celebrate({
-//     body: Joi.object().keys({
-//       avatar: Joi.string()
-//         .pattern(
-// eslint-disable-next-line max-len
-//           /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\\+~#=]+\.[a-zA-Z0-9()]+([-a-zA-Z0-9()@:%_\\+.~#?&/=#]*)/,
-//         ).required(),
-//     }),
-//   }),
-//   updateAvatar,
-// );
-
 module.exports = router;

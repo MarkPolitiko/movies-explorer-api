@@ -4,26 +4,16 @@ const bcrypt = require('bcrypt');
 
 const saltRounds = 10;
 const User = require('../models/user');
-const config = require('../utils/config');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
 const BadRequestError = require('../errors/badRequestErr');
 const NotFoundError = require('../errors/notFoundErr');
-// const UnauthorizedError = require('../errors/unauthorizedErr');
 const RequestConflictError = require('../errors/requestConflictErr');
 
 const {
   SUCCESS,
 } = require('../utils/constants');
-
-// module.exports.getUsers = (req, res, next) => {
-//   User.find({})
-//     .then((users) => {
-//       res.status(SUCCESS).send({ users });
-//     })
-//     .catch((err) => next(err));
-// };
 
 module.exports.createUser = (req, res, next) => {
   const {
@@ -40,7 +30,6 @@ module.exports.createUser = (req, res, next) => {
       password: hash,
     }))
     .then((user) => res.status(SUCCESS).send({
-      // _id: user._id,
       name: user.name,
       email: user.email,
     }))
@@ -71,23 +60,6 @@ module.exports.getCurrentUser = (req, res, next) => {
     });
 };
 
-// module.exports.getUserById = (req, res, next) => {
-//   User.findById(req.params.userId)
-//     .then((user) => {
-//       if (!user) {
-//         throw new NotFoundError('Пользователь с указанным id не найден');
-//       }
-//       res.status(SUCCESS).send(user);
-//     })
-//     .catch((err) => {
-//       if (err.name === 'CastError') {
-//         next(new BadRequestError('Неверный Id'));
-//       } else {
-//         next(err);
-//       }
-//     });
-// };
-
 // для проекта
 module.exports.updateUser = (req, res, next) => {
   User.findByIdAndUpdate(
@@ -109,45 +81,18 @@ module.exports.updateUser = (req, res, next) => {
     });
 };
 
-// module.exports.updateAvatar = (req, res, next) => {
-//   User.findByIdAndUpdate(
-//     req.user._id,
-//     { avatar: req.body.avatar },
-//     { new: true, runValidators: true },
-//   )
-//     .then((user) => {
-//       res.status(SUCCESS).send(user);
-//     })
-//     .catch((err) => {
-//       if (err.name === 'ValidationError') {
-//         next(new BadRequestError('Передан некорректный запрос'));
-//       } else if (err.name === 'CastError') {
-//         next(new NotFoundError('Пользователь не найден'));
-//       } else {
-//         next(err);
-//       }
-//     });
-// };
-
 module.exports.loginUser = (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password) {
     next(new BadRequestError('Отсутствует email или пароль'));
   }
-  User.findUserByCredentials(email, password)/* ({ email }).select('+password') */
+  User.findUserByCredentials(email, password)
     .then((user) => {
-      // if (!user) {
-      //   throw new UnauthorizedError('Ошибка авторизации');
-      // }
       const token = jwt.sign(
         { _id: user._id },
         NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
         { expiresIn: '7d' },
       );
-      // res.cookie('jwt', token, {
-      //   httpOnly: true,
-      //   maxAge: 3600000 * 24 * 7,
-      // });
       return res.send({ token });
     })
     .catch((err) => {
@@ -158,14 +103,3 @@ module.exports.loginUser = (req, res, next) => {
       }
     });
 };
-
-// ЭТО НУЖНО???
-// module.exports.unauthorized = (req, res) => {
-//   const token = '';
-//   res.cookie('jwt', token, {
-//     httpOnly: true,
-//     sameSite: true,
-//     maxAge: 3600000 * 24 * 7,
-//   });
-//   res.send({ token });
-// };

@@ -6,7 +6,6 @@ const { SUCCESS, CREATED } = require('../utils/constants');
 
 module.exports.getMovies = (req, res, next) => {
   Movie.find({})
-    // .populate(['owner', 'likes']).sort({ createdAt: -1 })
     .then((movies) => {
       res.status(SUCCESS).send(movies);
     })
@@ -42,7 +41,6 @@ module.exports.createMovie = (req, res, next) => {
     movieId,
     owner: req.user._id,
   })
-    // .then((movie) => movie.populate("owner", "likes"))
     .then((movie) => res.status(CREATED).send({ body: movie }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -73,47 +71,3 @@ module.exports.deleteMovieById = (req, res, next) => {
       }
     });
 };
-
-// module.exports.likeCard = (req, res, next) => {
-//   Card.findByIdAndUpdate(
-//     req.params.cardId,
-//     { $addToSet: { likes: req.user._id } },
-//     { new: true }
-//   )
-//     .populate(["owner", "likes"])
-//     .then((card) => {
-//       if (!card) {
-//         throw new NotFoundError("Передан несуществующий id карточки");
-//       }
-//       res.status(SUCCESS).send(card);
-//     })
-//     .catch((err) => {
-//       if (err.name === "CastError") {
-//         next(new BadRequestError("Передан некорректный запрос"));
-//       } else {
-//         next(err);
-//       }
-//     });
-// };
-
-// module.exports.dislikeCard = (req, res, next) => {
-//   Card.findByIdAndUpdate(
-//     req.params.cardId,
-//     { $pull: { likes: req.user._id } },
-//     { new: true }
-//   )
-//     .populate(["owner", "likes"])
-//     .then((card) => {
-//       if (!card) {
-//         throw new NotFoundError("Передан несуществующий id карточки");
-//       }
-//       res.status(SUCCESS).send(card);
-//     })
-//     .catch((err) => {
-//       if (err.name === "CastError") {
-//         next(new BadRequestError("Передан некорректный запрос"));
-//       } else {
-//         next(err);
-//       }
-//     });
-// };

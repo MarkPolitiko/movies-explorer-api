@@ -31,7 +31,7 @@ router.post(
       thumbnail: Joi.string()
         .required()
         .pattern(regex),
-      movieId: Joi.string().length(24).hex().required(), // positive().integer()???
+      movieId: Joi.string().length(24).hex().required(),
     }),
   }),
   createMovie,
@@ -46,25 +46,5 @@ router.delete(
   }),
   deleteMovieById,
 );
-
-// router.put(
-//   '/:cardId/likes',
-//   celebrate({
-//     params: Joi.object().keys({
-//       cardId: Joi.string().length(24).hex().required(),
-//     }),
-//   }),
-//   likeCard,
-// );
-
-// router.delete(
-//   '/:cardId/likes',
-//   celebrate({
-//     params: Joi.object().keys({
-//       cardId: Joi.string().length(24).hex().required(),
-//     }),
-//   }),
-//   dislikeCard,
-// );
 
 module.exports = router;
