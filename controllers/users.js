@@ -130,7 +130,7 @@ module.exports.loginUser = (req, res, next) => {
   if (!email || !password) {
     next(new BadRequestError('Отсутствует email или пароль'));
   }
-  User.findUserByCredentials({ email }).select('+password')
+  return User.findUserByCredentials(email, password)/* ({ email }).select('+password') */
     .then((user) => {
       // if (!user) {
       //   throw new UnauthorizedError('Ошибка авторизации');
@@ -144,7 +144,7 @@ module.exports.loginUser = (req, res, next) => {
       //   httpOnly: true,
       //   maxAge: 3600000 * 24 * 7,
       // });
-      return res.send({ token });
+      /* return  */res.send({ token });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
