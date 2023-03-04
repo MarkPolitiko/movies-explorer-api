@@ -1,10 +1,12 @@
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+
+const saltRounds = 10;
 const User = require('../models/user');
 const config = require('../utils/config');
 
-// const { NODE_ENV, JWT_SECRET } = process.env;
+const { NODE_ENV, JWT_SECRET } = process.env;
 
 const BadRequestError = require('../errors/badRequestErr');
 const NotFoundError = require('../errors/notFoundErr');
@@ -31,7 +33,7 @@ module.exports.createUser = (req, res, next) => {
     next(new BadRequestError('Отсутствует email или пароль'));
   }
   bcrypt
-    .hash(password, 10)
+    .hash(password, saltRounds)
     .then((hash) => User.create({
       name,
       email,
@@ -139,7 +141,7 @@ module.exports.loginUser = (req, res, next) => {
       // }
       const token = jwt.sign(
         { _id: user._id },
-        config.JWT_SECRET,
+        NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
         { expiresIn: '7d' },
       );
       // res.cookie('jwt', token, {
