@@ -42,7 +42,6 @@ module.exports.createUser = (req, res, next) => {
     });
 };
 
-// для проекта
 module.exports.getCurrentUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
@@ -60,7 +59,6 @@ module.exports.getCurrentUser = (req, res, next) => {
     });
 };
 
-// для проекта
 module.exports.updateUser = (req, res, next) => {
   User.findByIdAndUpdate(
     req.user._id,
@@ -71,10 +69,12 @@ module.exports.updateUser = (req, res, next) => {
       res.status(SUCCESS).send(user);
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.code === 11000) {
+        next(new RequestConflictError('Пользователь уже зарегистрирован'));
+      } else if (err.name === 'ValidationError') {
         next(new BadRequestError('Передан некорректный запрос'));
       } else if (err.name === 'CastError') {
-        next(new NotFoundError('Пользователь не найден'));
+        next(new NotFoundError('Неверный Id'));
       } else {
         next(err);
       }

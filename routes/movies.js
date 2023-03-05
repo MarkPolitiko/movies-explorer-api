@@ -4,8 +4,6 @@ const {
   getMovies,
   createMovie,
   deleteMovieById,
-  // likeCard,
-  // dislikeCard,
 } = require('../controllers/movies');
 
 const regex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\\+~#=]+\.[a-zA-Z0-9()]+([-a-zA-Z0-9()@:%_\\+.~#?&/=#]*)/;
@@ -18,7 +16,7 @@ router.post(
       country: Joi.string().required(),
       director: Joi.string().required(),
       duration: Joi.number().required(),
-      year: Joi.string().required().min(4).max(4),
+      year: Joi.string().required(),
       description: Joi.string().required(),
       image: Joi.string()
         .required()
@@ -31,17 +29,17 @@ router.post(
       thumbnail: Joi.string()
         .required()
         .pattern(regex),
-      movieId: Joi.string().length(24).hex().required(),
+      movieId: Joi.number().required(),
     }),
   }),
   createMovie,
 );
 
 router.delete(
-  '/:movieId',
+  '/:_id',
   celebrate({
     params: Joi.object().keys({
-      movieId: Joi.string().length(24).hex().required(),
+      _id: Joi.string().length(24).hex().required(),
     }),
   }),
   deleteMovieById,

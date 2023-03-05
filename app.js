@@ -1,5 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
-
 const cors = require('cors');
 const express = require('express');
 const helmet = require('helmet');
