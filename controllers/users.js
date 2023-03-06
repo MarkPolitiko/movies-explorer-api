@@ -74,7 +74,7 @@ module.exports.updateUser = (req, res, next) => {
       } else if (err.name === 'ValidationError') {
         next(new BadRequestError('Передан некорректный запрос'));
       } else if (err.name === 'CastError') {
-        next(new NotFoundError('Неверный Id'));
+        next(new BadRequestError('Неверный Id'));
       } else {
         next(err);
       }
